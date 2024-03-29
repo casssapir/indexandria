@@ -1,5 +1,5 @@
 {
-    "cumulative_input_cost": 0.0,
-    "cumulative_output_cost": 0.0,
-    "cumulative_total_cost": 0.0
+    "cumulative_input_cost": 3.1e-05,
+    "cumulative_output_cost": 0.0004155,
+    "cumulative_total_cost": 0.0004465
 }

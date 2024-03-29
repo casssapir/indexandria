@@ -8,19 +8,13 @@ from rich import box
 from rich.panel import Panel
 from rich.table import Table
 
+from config import MODEL_COSTS
+
 # Initialize a Rich console
 console = Console()
 
 # Load environment variables
 load_dotenv()
-
-# Define a dictionary to hold cost information for various models
-MODEL_COSTS = {
-    "gpt-3.5-turbo-0125": {
-        "input_cost_per_million_tokens": 0.50,  # Cost per 1M input tokens in dollars
-        "output_cost_per_million_tokens": 1.50,  # Cost per 1M output tokens in dollars
-    }
-}
 
 def send_prompt(prompt, model='openai'):
     # Using Rich for headers and prompts
