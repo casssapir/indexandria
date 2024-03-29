@@ -13,6 +13,14 @@ console = Console()
 # Load environment variables
 load_dotenv()
 
+# Define a dictionary to hold cost information for various models
+MODEL_COSTS = {
+    "gpt-3.5-turbo-0125": {
+        "input_cost_per_million_tokens": 0.50,  # Cost per 1M input tokens in dollars
+        "output_cost_per_million_tokens": 1.50,  # Cost per 1M output tokens in dollars
+    }
+}
+
 def send_prompt(prompt, model='openai'):
     # Using Rich for headers and prompts
     console.print(Panel(Text(prompt, style="bold green"), title="Prompt", box=box.DOUBLE))
@@ -51,29 +59,40 @@ def send_prompt(prompt, model='openai'):
     else:
         raise ValueError("Unsupported model. Choose 'openai' or 'mistral'.")
 
+    # Inside send_prompt function, after receiving response and before printing token info:
     if response.status_code == 200:
         console.print(Text("Response received from OpenAI.\n", style="bold blue"))
         data = response.json()
         # Extract and print the assistant's response using Rich
         assistant_message = data['choices'][0]['message']['content']
         console.print(Panel(Text(assistant_message, style="italic"), title="Response", box=box.DOUBLE))
+
+        # Displaying token usage information and calculate costs
+        print_token_info(data['usage'], model="gpt-3.5-turbo-0125")  # Pass the model parameter
         
-        # Displaying token usage information
-        print_token_info(data['usage'])
-        
-        return data  # Return the full response object for further use if needed
+        return data
     else:
         console.print(Text("Failed to get response: " + response.text, style="bold red"))
-        return {"error": f"Failed to get response: {response.text}"}  # Handle errors
+        return {"error": f"Failed to get response: {response.text}"}
 
-def print_token_info(usage):
-    table = Table(title="Token Usage", box=box.DOUBLE)
+def print_token_info(usage, model='gpt-3.5-turbo-0125'):
+    model_costs = MODEL_COSTS.get(model, {})
+    input_cost = model_costs.get("input_cost_per_million_tokens", 0)
+    output_cost = model_costs.get("output_cost_per_million_tokens", 0)
+
+    # Calculate the cost for the used tokens
+    prompt_cost = usage['prompt_tokens'] / 1_000_000 * input_cost
+    completion_cost = usage['completion_tokens'] / 1_000_000 * output_cost
+    total_cost = prompt_cost + completion_cost
+
+    table = Table(title="Token Usage and Costs", box=box.DOUBLE)
     table.add_column("Type", style="cyan", no_wrap=True)
     table.add_column("Tokens", style="magenta")
-    
-    table.add_row("Prompt Tokens", str(usage['prompt_tokens']))
-    table.add_row("Completion Tokens", str(usage['completion_tokens']))
-    table.add_row("Total Tokens", str(usage['total_tokens']))
+    table.add_column("Cost (USD)", style="green")
+
+    table.add_row("Prompt Tokens", str(usage['prompt_tokens']), f"${prompt_cost:.4f}")
+    table.add_row("Completion Tokens", str(usage['completion_tokens']), f"${completion_cost:.4f}")
+    table.add_row("Total Tokens", str(usage['total_tokens']), f"${total_cost:.4f}")
     
     console.print(table)
 
