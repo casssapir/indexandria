@@ -6,6 +6,10 @@ from dotenv import load_dotenv
 load_dotenv()
 
 def send_prompt(prompt, model='openai'):
+    print("\nPrompt:\n" + prompt)  # Print the prompt
+
+    print("\nSending message to OpenAI (awaiting response)...\n")
+    
     if model == 'openai':
         response = requests.post(
             "https://api.openai.com/v1/chat/completions",
@@ -39,11 +43,12 @@ def send_prompt(prompt, model='openai'):
         raise ValueError("Unsupported model. Choose 'openai' or 'mistral'.")
 
     if response.status_code == 200:
+        print("Response received from OpenAI.\n")
         data = response.json()
         # Extract and print the assistant's response
         assistant_message = data['choices'][0]['message']['content']
-        print("\nAssistant's response:\n")
-        print(assistant_message)
+        print("Response:\n")
+        print(assistant_message + "\n")  # Print the response with a new line for spacing
         return data  # Return the full response object for further use if needed
     else:
         print("Failed to get response:", response.text)
