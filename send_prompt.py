@@ -85,14 +85,14 @@ def print_token_info(usage, model='gpt-3.5-turbo-0125'):
     completion_cost = usage['completion_tokens'] / 1_000_000 * output_cost
     total_cost = prompt_cost + completion_cost
 
-    table = Table(title="Token Usage and Costs", box=box.DOUBLE)
+    table = Table(title="LLM Usage and Costs", box=box.DOUBLE)
     table.add_column("Type", style="cyan", no_wrap=True)
     table.add_column("Tokens", style="magenta")
     table.add_column("Cost (USD)", style="green")
 
-    table.add_row("Prompt Tokens", str(usage['prompt_tokens']), f"${prompt_cost:.4f}")
-    table.add_row("Completion Tokens", str(usage['completion_tokens']), f"${completion_cost:.4f}")
-    table.add_row("Total Tokens", str(usage['total_tokens']), f"${total_cost:.4f}")
+    table.add_row("Input (Prompt)", str(usage['prompt_tokens']), f"${prompt_cost:.6f}")
+    table.add_row("Output (Response)", str(usage['completion_tokens']), f"${completion_cost:.6f}")
+    table.add_row("Total", str(usage['total_tokens']), f"${total_cost:.6f}")
     
     console.print(table)
 
