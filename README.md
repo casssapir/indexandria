@@ -43,6 +43,14 @@ Your command prompt should now begin with ```(venv)``` indicating that you are n
 pip install -r requirements.txt
 ```
 
+**4. Create environment file**
+
+Create a file in the root directory called ```.env```. Using the below template add in your API keys and other details.
+```
+OPENAI_API_KEY=your_openai_api_key_here
+MISTRAL_API_KEY=your_mistral_api_key_here
+```
+
 
 ## Running Indexandria
 - start the application

@@ -1,13 +1,16 @@
-# /send_prompt.py
-
+import os
 import requests
+from dotenv import load_dotenv
+
+# Load environment variables
+load_dotenv()
 
 def send_prompt(prompt, model='openai'):
     if model == 'openai':
         response = requests.post(
             "https://api.openai.com/v1/completions",
             headers={
-                "Authorization": f"Bearer YOUR_OPENAI_API_KEY",
+                "Authorization": f"Bearer {os.getenv('OPENAI_API_KEY')}",
                 "Content-Type": "application/json",
             },
             json={
@@ -24,7 +27,7 @@ def send_prompt(prompt, model='openai'):
         response = requests.post(
             "MISTRAL_API_ENDPOINT", # Replace with the actual Mistral API endpoint
             headers={
-                "Authorization": "Bearer YOUR_MISTRAL_API_KEY",
+                "Authorization": f"Bearer {os.getenv('MISTRAL_API_KEY')}",
                 "Content-Type": "application/json",
             },
             json={
