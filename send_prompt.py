@@ -16,19 +16,16 @@ load_dotenv()
 def send_prompt(prompt, model='openai'):
     if model == 'openai':
         response = requests.post(
-            "https://api.openai.com/v1/completions",
+            "https://api.openai.com/v1/chat/completions",
             headers={
                 "Authorization": f"Bearer {os.getenv('OPENAI_API_KEY')}",  # Use API key from .env
                 "Content-Type": "application/json",
             },
             json={
-                "model": "gpt-3.5-turbo-0125",  # Specify the model
-                "prompt": prompt,  # The input text to generate a response for
-                "max_tokens": 100,  # Maximum length of the model's response
-                "temperature": 0.7,  # 0.0 (more repetitious) - 1.0 (more random) (0.7 is a balanced choice)
-                "top_p": 1.0,  # 1.0 = considers all tokens (promotes diversity)
-                "frequency_penalty": 0.0,  # 0.0 = no penalty for repeated tokens
-                "presence_penalty": 0.0,  # 0.0 = no penalty for new token presence
+                "model": "gpt-3.5-turbo-0125",  # Corrected model identifier
+                "messages": [
+                    {"role": "user", "content": prompt}
+                ],  # Updated to match expected structure
             }
         )
     elif model == 'mistral':
@@ -56,8 +53,10 @@ def send_prompt(prompt, model='openai'):
 
 # Example usage
 if __name__ == "__main__":
-    prompt = "Tell me a joke."
-    model = 'openai'  # Specify the model to use ('openai' or 'mistral')
+    prompt = ("My electric vehicle isn't charging when I plug it into the charging station. "
+              "I've checked that the charging cable is securely connected to both my vehicle and the charging station, "
+              "but the charging process doesn't start. What are some steps I can take to troubleshoot this issue?")
+    model = 'openai'  # Specifying to use the OpenAI model
     
     response = send_prompt(prompt, model=model)
     print(response)  # Print the model's response
