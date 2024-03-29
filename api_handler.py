@@ -41,7 +41,7 @@ def send_prompt(prompt, api_details):
 
 # Example usage
 if __name__ == "__main__":
-    prompt = "Tell me a joke."
+    prompt = "I can't log in to my account. Can you help?"
     openai_details = {
         "api_key_env_variable": "OPENAI_API_KEY",
         "url": "https://api.openai.com/v1/chat/completions",
@@ -53,5 +53,5 @@ if __name__ == "__main__":
         "model_name": "open-mixtral-8x7b",
     }
     # Try changing 'openai_details' to 'mistral_details' to test with Mistral AI
-    response = send_prompt(prompt, mistral_details)
+    response = send_prompt(prompt, openai_details)
     print(response)
