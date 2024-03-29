@@ -5,6 +5,7 @@ from rich.console import Console
 from rich.text import Text
 from rich import box
 from rich.panel import Panel
+from rich.table import Table
 
 # Initialize a Rich console
 console = Console()
@@ -56,10 +57,25 @@ def send_prompt(prompt, model='openai'):
         # Extract and print the assistant's response using Rich
         assistant_message = data['choices'][0]['message']['content']
         console.print(Panel(Text(assistant_message, style="italic"), title="Response", box=box.DOUBLE))
+        
+        # Displaying token usage information
+        print_token_info(data['usage'])
+        
         return data  # Return the full response object for further use if needed
     else:
         console.print(Text("Failed to get response: " + response.text, style="bold red"))
         return {"error": f"Failed to get response: {response.text}"}  # Handle errors
+
+def print_token_info(usage):
+    table = Table(title="Token Usage", box=box.DOUBLE)
+    table.add_column("Type", style="cyan", no_wrap=True)
+    table.add_column("Tokens", style="magenta")
+    
+    table.add_row("Prompt Tokens", str(usage['prompt_tokens']))
+    table.add_row("Completion Tokens", str(usage['completion_tokens']))
+    table.add_row("Total Tokens", str(usage['total_tokens']))
+    
+    console.print(table)
 
 # Example usage
 if __name__ == "__main__":
