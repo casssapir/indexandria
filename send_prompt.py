@@ -5,6 +5,10 @@ from dotenv import load_dotenv
 # Load environment variables
 load_dotenv()
 
+# OpenAI 
+# Model Reference https://platform.openai.com/docs/models/overview
+# Cost Reference https://openai.com/pricing
+
 def send_prompt(prompt, model='openai'):
     if model == 'openai':
         response = requests.post(
@@ -14,7 +18,7 @@ def send_prompt(prompt, model='openai'):
                 "Content-Type": "application/json",
             },
             json={
-                "model": "gpt-3.5-turbo",
+                "model": "gpt-3.5-turbo-0125",
                 "prompt": prompt,
                 "max_tokens": 100,
                 "temperature": 0.7,
