@@ -1,14 +1,22 @@
 import requests
 import os
 from dotenv import load_dotenv
+from rich.console import Console
+from rich.text import Text
+from rich import box
+from rich.panel import Panel
+
+# Initialize a Rich console
+console = Console()
 
 # Load environment variables
 load_dotenv()
 
 def send_prompt(prompt, model='openai'):
-    print("\nPrompt:\n" + prompt)  # Print the prompt
+    # Using Rich for headers and prompts
+    console.print(Panel(Text(prompt, style="bold green"), title="Prompt", box=box.DOUBLE))
 
-    print("\nSending message to OpenAI (awaiting response)...\n")
+    console.print(Text("\nSending message to OpenAI (awaiting response)...\n", style="bold yellow"))
     
     if model == 'openai':
         response = requests.post(
@@ -43,15 +51,14 @@ def send_prompt(prompt, model='openai'):
         raise ValueError("Unsupported model. Choose 'openai' or 'mistral'.")
 
     if response.status_code == 200:
-        print("Response received from OpenAI.\n")
+        console.print(Text("Response received from OpenAI.\n", style="bold blue"))
         data = response.json()
-        # Extract and print the assistant's response
+        # Extract and print the assistant's response using Rich
         assistant_message = data['choices'][0]['message']['content']
-        print("Response:\n")
-        print(assistant_message + "\n")  # Print the response with a new line for spacing
+        console.print(Panel(Text(assistant_message, style="italic"), title="Response", box=box.DOUBLE))
         return data  # Return the full response object for further use if needed
     else:
-        print("Failed to get response:", response.text)
+        console.print(Text("Failed to get response: " + response.text, style="bold red"))
         return {"error": f"Failed to get response: {response.text}"}  # Handle errors
 
 # Example usage
