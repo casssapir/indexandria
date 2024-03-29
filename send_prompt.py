@@ -5,14 +5,6 @@ from dotenv import load_dotenv
 # Load environment variables
 load_dotenv()
 
-# OpenAI 
-# Model Reference https://platform.openai.com/docs/models/overview
-# Cost Reference https://openai.com/pricing
-# in general, 
-# English: 1 word ≈ 1.3 tokens
-# Spanish: 1 word ≈ 2 tokens
-# French: 1 word ≈ 2 tokens
-
 def send_prompt(prompt, model='openai'):
     if model == 'openai':
         response = requests.post(
@@ -22,7 +14,7 @@ def send_prompt(prompt, model='openai'):
                 "Content-Type": "application/json",
             },
             json={
-                "model": "gpt-3.5-turbo-0125",  # Corrected model identifier
+                "model": "gpt-3.5-turbo-0125",  # Specify the model
                 "messages": [
                     {"role": "user", "content": prompt}
                 ],  # Updated to match expected structure
@@ -47,8 +39,14 @@ def send_prompt(prompt, model='openai'):
         raise ValueError("Unsupported model. Choose 'openai' or 'mistral'.")
 
     if response.status_code == 200:
-        return response.json()  # Return the model's response
+        data = response.json()
+        # Extract and print the assistant's response
+        assistant_message = data['choices'][0]['message']['content']
+        print("\nAssistant's response:\n")
+        print(assistant_message)
+        return data  # Return the full response object for further use if needed
     else:
+        print("Failed to get response:", response.text)
         return {"error": f"Failed to get response: {response.text}"}  # Handle errors
 
 # Example usage
@@ -58,5 +56,4 @@ if __name__ == "__main__":
               "but the charging process doesn't start. What are some steps I can take to troubleshoot this issue?")
     model = 'openai'  # Specifying to use the OpenAI model
     
-    response = send_prompt(prompt, model=model)
-    print(response)  # Print the model's response
+    send_prompt(prompt, model=model)  # Print the assistant's response
