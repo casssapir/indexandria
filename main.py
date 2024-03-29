@@ -1,7 +1,4 @@
 from api_handler import send_prompt
-from cost_manager import calculate_cost, update_cumulative_costs, read_cumulative_costs
-from utils import print_token_info, console
-from config import MODEL_COSTS
 
 def main():
     prompt = ("My electric vehicle isn't charging when I plug it into the charging station. "
