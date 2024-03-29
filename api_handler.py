@@ -2,69 +2,42 @@ import requests
 from dotenv import load_dotenv
 import os
 
-from rich.console import Console
-from rich.text import Text
-from rich import box
-from rich.panel import Panel
-from rich.table import Table
-
-from utils import print_token_info
-
-# Initialize a Rich console for api_handler
-console = Console()
-
+# Load environment variables
 load_dotenv()
 
 def send_prompt(prompt, model='openai'):
-    # Using Rich for headers and prompts
-    console.print(Panel(Text(prompt, style="bold green"), title="Prompt", box=box.DOUBLE))
+    # Check for API key in environment variables
+    api_key = os.getenv('OPENAI_API_KEY')
+    if not api_key:
+        raise ValueError("OPENAI_API_KEY is not set in the environment variables.")
 
-    console.print(Text("\nSending message to OpenAI (awaiting response)...\n", style="bold yellow"))
-    
-    if model == 'openai':
-        response = requests.post(
-            "https://api.openai.com/v1/chat/completions",
-            headers={
-                "Authorization": f"Bearer {os.getenv('OPENAI_API_KEY')}",  # Use API key from .env
-                "Content-Type": "application/json",
-            },
-            json={
-                "model": "gpt-3.5-turbo-0125",  # Specify the model
-                "messages": [
-                    {"role": "user", "content": prompt}
-                ],  # Updated to match expected structure
-            }
-        )
-    elif model == 'mistral':
-        response = requests.post(
-            "MISTRAL_API_ENDPOINT", # Replace with the actual Mistral API endpoint
-            headers={
-                "Authorization": f"Bearer {os.getenv('MISTRAL_API_KEY')}",
-                "Content-Type": "application/json",
-            },
-            json={
-                "model": "current_model", # Replace with actual model name if necessary
-                "prompt": prompt,
-                "max_tokens": 100,
-                "temperature": 0.7,
-                "top_p": 1.0,
-            }
-        )
-    else:
-        raise ValueError("Unsupported model. Choose 'openai' or 'mistral'.")
+    # Prepare the headers
+    headers = {
+        "Authorization": f"Bearer {api_key}",
+        "Content-Type": "application/json",
+    }
 
-    # Inside send_prompt function, after receiving response and before printing token info:
+    # Prepare the payload
+    payload = {
+        "model": "gpt-3.5-turbo" if model == 'openai' else "current_model",  # Update as needed for 'mistral'
+        "messages": [{"role": "user", "content": prompt}],
+    }
+
+    # URL for OpenAI or Mistral API
+    url = "https://api.openai.com/v1/chat/completions" if model == 'openai' else "MISTRAL_API_ENDPOINT"
+
+    # Send the request
+    response = requests.post(url, headers=headers, json=payload)
+
     if response.status_code == 200:
-        console.print(Text("Response received from OpenAI.\n", style="bold blue"))
-        data = response.json()
-        # Extract and print the assistant's response using Rich
-        assistant_message = data['choices'][0]['message']['content']
-        console.print(Panel(Text(assistant_message, style="italic"), title="Response", box=box.DOUBLE))
-
-        # Displaying token usage information and calculate costs
-        print_token_info(data['usage'], model="gpt-3.5-turbo-0125")  # Pass the model parameter
-        
-        return data
+        # Return the JSON response if successful
+        return response.json()
     else:
-        console.print(Text("Failed to get response: " + response.text, style="bold red"))
-        return {"error": f"Failed to get response: {response.text}"}
+        # Return an error message if the request was not successful
+        return {"error": f"Failed to get response: {response.status_code} {response.text}"}
+
+# Example usage
+if __name__ == "__main__":
+    prompt = "Tell me a joke."
+    response = send_prompt(prompt, model='openai')
+    print(response)

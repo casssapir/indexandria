@@ -8,8 +8,8 @@ def main():
 
     response = send_prompt(prompt, model=model)
     if response:
-        # Assume response processing including cost calculation is handled within send_prompt or elsewhere as needed
-        pass
+        # Print the response from the API
+        print(response)
 
 if __name__ == "__main__":
     main()
