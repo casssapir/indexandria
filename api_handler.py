@@ -11,33 +11,40 @@ def send_prompt(prompt, model='openai'):
 
     Parameters:
     - prompt (str): The text prompt to send to the language model.
-    - model (str): The model to use (openai, mistral, etc...)
+    - model (str): The model to use ('openai' for OpenAI's models, 'mistral' for Mistral AI's models).
 
     Returns:
     - dict: A dictionary containing the API's response if successful. In case of failure, returns a dictionary with an error message.
-
-    Raises:
-    - ValueError: If the OPENAI_API_KEY is not set in the environment variables.
     """
-    # Check for API key in environment variables
-    api_key = os.getenv('OPENAI_API_KEY')
+    # Determine which API key and endpoint to use based on the model parameter
+    if model == 'openai':
+        api_key = os.getenv('OPENAI_API_KEY')
+        url = "https://api.openai.com/v1/chat/completions"
+        headers = {
+            "Authorization": f"Bearer {api_key}",
+            "Content-Type": "application/json",
+        }
+        payload = {
+            "model": "gpt-3.5-turbo",
+            "messages": [{"role": "user", "content": prompt}],
+        }
+    elif model == 'mistral':
+        api_key = os.getenv('MISTRAL_API_KEY')
+        url = "https://api.mistral.ai/v1/chat/completions"
+        headers = {
+            "Authorization": f"Bearer {api_key}",
+            "Content-Type": "application/json",
+        }
+        payload = {
+            "model": "open-mixtral-8x7b",  # Or other Mistral model names as required
+            "messages": [{"role": "user", "content": prompt}],
+        }
+    else:
+        raise ValueError(f"Unsupported model: {model}")
+
+    # Ensure API key is provided
     if not api_key:
-        raise ValueError("OPENAI_API_KEY is not set in the .env file.")
-
-    # Prepare the headers for the request
-    headers = {
-        "Authorization": f"Bearer {api_key}",
-        "Content-Type": "application/json",
-    }
-
-    # Prepare the payload with the model and prompt information
-    payload = {
-        "model": "gpt-3.5-turbo" if model == 'openai' else "current_model", # Choose model based on input
-        "messages": [{"role": "user", "content": prompt}], # Encapsulate prompt in the required structure
-    }
-
-    # Set the URL for the API request, based on the model selected
-    url = "https://api.openai.com/v1/chat/completions" if model == 'openai' else "MISTRAL_API_ENDPOINT"
+        raise ValueError(f"API key for {model} is not set in the .env file.")
 
     # Send the request to the API
     response = requests.post(url, headers=headers, json=payload)
@@ -50,8 +57,9 @@ def send_prompt(prompt, model='openai'):
         # Return an error message if the request was not successful
         return {"error": f"Failed to get response: {response.status_code} {response.text}"}
 
-# Example usage to demonstrate how the function can be called
+# Example usage
 if __name__ == "__main__":
     prompt = "Tell me a joke."
-    response = send_prompt(prompt, model='openai')
-    print(response)  # Print the response from the API to the console
+    # Try changing 'openai' to 'mistral' to test with Mistral AI
+    response = send_prompt(prompt, model='mistral')
+    print(response)
