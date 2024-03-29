@@ -1,0 +1,9 @@
+# Primary dependency for making HTTP requests
+requests==2.31.0
+
+# Dependencies below are required by requests
+# Consider keeping these versions to ensure compatibility
+certifi==2024.2.2                # Certificates for SSL
+charset-normalizer==3.3.2        # Charset detection for content decoding
+idna==3.6                        # Support for Internationalized Domain Names
+urllib3==2.2.1                   # HTTP client for Python (used by requests)

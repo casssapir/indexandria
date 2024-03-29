@@ -51,3 +51,8 @@ pip install -r requirements.txt
 
 ## Contributing
 We welcome contributions to Indexandria! Please read our contribution guidelines for more information on how you can contribute to the project.
+
+Make sure to update ```requirements.txt``` with any changes by running 
+```
+pip freeze > requirements.txt
+```
