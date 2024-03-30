@@ -1,24 +1,15 @@
 import requests
 from dotenv import load_dotenv
 import os
-from instructions import request_more_details, encourage_concise_answers  # Import instruction sets
+from instructions import request_more_details  # Assuming you're using this for now
 
 # Load environment variables from a .env file located in the same directory.
 load_dotenv()
 
 def send_prompt(prompt, api_details, request_context=False):
-    """
-    Sends a text prompt to a specified language model API and returns the response.
+    print(f"Sending prompt to API: {prompt[:50]}...")  # Print the first 50 characters of the prompt
+    print(f"Request context flag is: {request_context}")
 
-    Parameters:
-    - prompt (str): The text prompt to send to the language model.
-    - api_details (dict): A dictionary containing details required to send the request,
-                          including the API key, URL, model name, and any other necessary information.
-    - request_context (bool): Optional flag indicating whether more context is being requested.
-
-    Returns:
-    - dict: A dictionary containing the API's response if successful. In case of failure, returns a dictionary with an error message.
-    """
     api_key = os.getenv(api_details['api_key_env_variable'])
     if not api_key:
         raise ValueError(f"API key for {api_details['model']} is not set in the .env file.")
@@ -29,24 +20,23 @@ def send_prompt(prompt, api_details, request_context=False):
     }
     
     if request_context:
-        # Use the instructions for requesting more details
         prompt = request_more_details + prompt
-    else:
-        # Optionally use different instructions based on your logic
-        pass
+        print("Modified prompt with instructions to request more details.")
 
     payload = {
         "model": api_details['model_name'],
         "messages": [{"role": "user", "content": prompt}],
     }
 
-    # Send the request to the API
     response = requests.post(api_details['url'], headers=headers, json=payload)
 
     if response.status_code == 200:
-        return response.json()
+        print("Received response successfully.")
     else:
-        return {"error": f"Failed to get response: {response.status_code} {response.text}"}
+        print(f"Failed to get response: {response.status_code} {response.text}")
+    
+    return response.json()
+
 
 # Example usage
 if __name__ == "__main__":

@@ -26,21 +26,19 @@ def get_more_context(prompt, api_details):
     request_context = True
 
     while True:
-        # Send the initial or updated prompt to the API
         response = send_prompt(prompt, api_details, request_context)
-
-        # Extract the message content from the response
-        message_content = response.get('choices', [{}])[0].get('message', {}).get('content', '').lower()
-
-        # Use the newly defined function to check if more context is needed
-        if not needs_more_context(message_content):
-            break  # Exit the loop if no more context is requested by the model
         
-        # Request additional context from the user
-        additional_context = input("Please provide more context to help with your request: ")
-        prompt += f" Additional context: {additional_context}"  # Append the additional context to the prompt
+        message_content = response.get('choices', [{}])[0].get('message', {}).get('content', '').lower()
+        print(f"Analyzing response for additional context needs: {message_content[:100]}...")  # Print part of the response
 
-        # Optionally, turn off the request_context flag if you don't want the model to keep asking for more context
-        request_context = False  # Adjust based on your logic and needs
+        if not needs_more_context(message_content):
+            print("No further context requested by the model.")
+            break
+        
+        additional_context = input("Please provide more context to help with your request: ")
+        print(f"User provided additional context: {additional_context}")
+        
+        prompt += f" Additional context: {additional_context}"
+        request_context = False
 
     return response
