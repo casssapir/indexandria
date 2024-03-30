@@ -1,14 +1,12 @@
 import requests
 from dotenv import load_dotenv
 import os
-from instructions import request_more_details  # Assuming you're using this for now
 
-# Load environment variables from a .env file located in the same directory.
+# Load environment variables from a .env file
 load_dotenv()
 
 def send_prompt(prompt, api_details, request_context=False):
     print(f"Sending prompt to API: {prompt[:50]}...")  # Print the first 50 characters of the prompt
-    print(f"Request context flag is: {request_context}")
 
     api_key = os.getenv(api_details['api_key_env_variable'])
     if not api_key:
@@ -18,10 +16,6 @@ def send_prompt(prompt, api_details, request_context=False):
         "Authorization": f"Bearer {api_key}",
         "Content-Type": "application/json",
     }
-    
-    if request_context:
-        prompt = request_more_details + prompt
-        print("Modified prompt with instructions to request more details.")
 
     payload = {
         "model": api_details['model_name'],
