@@ -1,5 +1,5 @@
 from api_handler import send_prompt
-from issue_tracker import SupportIssue  # Import the class
+from issue_tracker import SupportIssue
 
 def needs_more_context(message_content):
     # List of phrases that might indicate more context is needed
@@ -23,13 +23,15 @@ def get_more_context(prompt, api_details):
     Returns:
     - dict: The final response from the API after any necessary context has been provided.
     """
-   # Initialize a new SupportIssue object at the start of the interaction
+   # Placeholder for determining the issue category dynamically or from initial user input
+    issue_category = "General Inquiry"  # This could be dynamically set based on user input
+    
     support_issue = SupportIssue(
-        user_id="User123",  # Placeholder value, adjust as necessary
-        issue_category="Charging Issue",  # Example category
-        specific_details=prompt,  # Initial user prompt as the specific detail
-        hardware_software_details="",  # Placeholder, to be filled in as the user provides more details
-        steps_already_taken=""  # Placeholder, to be updated as user provides more info
+        user_id="",  # Placeholder for user ID
+        issue_category=issue_category,
+        specific_details=prompt,
+        hardware_software_details="",
+        steps_already_taken=""
     )
    
     # Flag to indicate whether to request context from the LLM
