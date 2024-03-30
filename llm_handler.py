@@ -1,38 +1,36 @@
 import requests
 from dotenv import load_dotenv
 import os
+import logging
+from requests.exceptions import RequestException
+
+# Initialize logging
+logging.basicConfig(level=logging.INFO)
 
 # Load environment variables from a .env file
 load_dotenv()
 
 def send_prompt(prompt, api_details, request_context=False):
-    print(f"Sending prompt to API: {prompt[:50]}...")  # Print the first 50 characters of the prompt
+    logging.info(f"Sending prompt to API: {prompt[:50]}...")
 
     api_key = os.getenv(api_details['api_key_env_variable'])
     if not api_key:
         raise ValueError(f"API key for {api_details['model']} is not set in the .env file.")
 
-    headers = {
-        "Authorization": f"Bearer {api_key}",
-        "Content-Type": "application/json",
-    }
+    headers = {"Authorization": f"Bearer {api_key}", "Content-Type": "application/json"}
 
-    payload = {
-        "model": api_details['model_name'],
-        "messages": [{"role": "user", "content": prompt}],
-    }
+    payload = {"model": api_details['model_name'], "messages": [{"role": "user", "content": prompt}]}
 
-    response = requests.post(api_details['url'], headers=headers, json=payload)
+    try:
+        response = requests.post(api_details['url'], headers=headers, json=payload)
+        response.raise_for_status()  # This will raise an HTTPError for bad responses
+        logging.info("Received response successfully.")
+        return response.json()
+    except RequestException as e:
+        logging.error(f"Failed to get response: {e}")
+        return None
 
-    if response.status_code == 200:
-        print("Received response successfully.")
-    else:
-        print(f"Failed to get response: {response.status_code} {response.text}")
-    
-    return response.json()
-
-
-# Example usage
+# Example usage should ideally be in a separate file or entry point
 if __name__ == "__main__":
     prompt = "I can't log in to my account. Can you help?"
     openai_details = {

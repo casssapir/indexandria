@@ -1,4 +1,4 @@
-from api_handler import send_prompt
+from llm_handler import send_prompt
 
 def main():
     prompt = ("My electric vehicle isn't charging when I plug it into the charging station. "
