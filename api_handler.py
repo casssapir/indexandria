@@ -1,11 +1,12 @@
 import requests
 from dotenv import load_dotenv
 import os
+from instructions import request_more_details, encourage_concise_answers  # Import instruction sets
 
 # Load environment variables from a .env file located in the same directory.
 load_dotenv()
 
-def send_prompt(prompt, api_details, request_context=False):  # Added request_context parameter
+def send_prompt(prompt, api_details, request_context=False):
     """
     Sends a text prompt to a specified language model API and returns the response.
 
@@ -27,9 +28,11 @@ def send_prompt(prompt, api_details, request_context=False):  # Added request_co
         "Content-Type": "application/json",
     }
     
-    # Optional: Modify the prompt based on the request_context flag if necessary
     if request_context:
-        # Here you can adjust the prompt or take other actions based on request_context
+        # Use the instructions for requesting more details
+        prompt = request_more_details + prompt
+    else:
+        # Optionally use different instructions based on your logic
         pass
 
     payload = {
@@ -44,7 +47,6 @@ def send_prompt(prompt, api_details, request_context=False):  # Added request_co
         return response.json()
     else:
         return {"error": f"Failed to get response: {response.status_code} {response.text}"}
-
 
 # Example usage
 if __name__ == "__main__":

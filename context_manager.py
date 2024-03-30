@@ -1,5 +1,16 @@
 from api_handler import send_prompt
 
+def needs_more_context(message_content):
+    # List of phrases that might indicate more context is needed
+    indicative_phrases = [
+        "can you",
+        "not sure",
+        "could you",
+        "are you"
+    ]
+    # Check if any of the indicative phrases are in the message content
+    return any(phrase in message_content for phrase in indicative_phrases)
+
 def get_more_context(prompt, api_details):
     """
     Manages the interaction loop with the language model, requesting more context when needed.
@@ -21,8 +32,8 @@ def get_more_context(prompt, api_details):
         # Extract the message content from the response
         message_content = response.get('choices', [{}])[0].get('message', {}).get('content', '').lower()
 
-        # Check if the message content indicates that more context is needed
-        if "more context is required" not in message_content:
+        # Use the newly defined function to check if more context is needed
+        if not needs_more_context(message_content):
             break  # Exit the loop if no more context is requested by the model
         
         # Request additional context from the user
