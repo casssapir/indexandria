@@ -5,7 +5,9 @@ import logging
 from requests.exceptions import RequestException
 
 # Initialize logging
-logging.basicConfig(level=logging.INFO)
+# set log level to DEBUG, INFO, WARNING, ERROR, CRITICAL
+logging.basicConfig(level=logging.DEBUG,
+                    format='%(levelname)s:%(name)s:%(filename)s:%(lineno)d:%(message)s')
 
 # Load environment variables from a .env file
 load_dotenv()
