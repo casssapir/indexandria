@@ -1,7 +1,7 @@
 from context_manager import get_more_context
 
 # Define the initial prompt and API details
-prompt = "I can't log in to my account. Can you help?"
+prompt = "I am trying to charge my ev car and it is not charging."
 api_details = {
     "api_key_env_variable": "OPENAI_API_KEY",
     "url": "https://api.openai.com/v1/chat/completions",
