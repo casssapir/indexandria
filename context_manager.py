@@ -18,9 +18,11 @@ def get_more_context(prompt, api_details):
         # Send the initial or updated prompt to the API
         response = send_prompt(prompt, api_details, request_context)
 
-        # Assuming the model's response can indicate the need for more context,
-        # check the response here and break the loop if no more context is needed
-        if not "more context is required" in response.get('choices', [{}])[0].get('message', '').lower():
+        # Extract the message content from the response
+        message_content = response.get('choices', [{}])[0].get('message', {}).get('content', '').lower()
+
+        # Check if the message content indicates that more context is needed
+        if "more context is required" not in message_content:
             break  # Exit the loop if no more context is requested by the model
         
         # Request additional context from the user

@@ -5,7 +5,7 @@ import os
 # Load environment variables from a .env file located in the same directory.
 load_dotenv()
 
-def send_prompt(prompt, api_details):
+def send_prompt(prompt, api_details, request_context=False):  # Added request_context parameter
     """
     Sends a text prompt to a specified language model API and returns the response.
 
@@ -13,6 +13,7 @@ def send_prompt(prompt, api_details):
     - prompt (str): The text prompt to send to the language model.
     - api_details (dict): A dictionary containing details required to send the request,
                           including the API key, URL, model name, and any other necessary information.
+    - request_context (bool): Optional flag indicating whether more context is being requested.
 
     Returns:
     - dict: A dictionary containing the API's response if successful. In case of failure, returns a dictionary with an error message.
@@ -25,6 +26,11 @@ def send_prompt(prompt, api_details):
         "Authorization": f"Bearer {api_key}",
         "Content-Type": "application/json",
     }
+    
+    # Optional: Modify the prompt based on the request_context flag if necessary
+    if request_context:
+        # Here you can adjust the prompt or take other actions based on request_context
+        pass
 
     payload = {
         "model": api_details['model_name'],
@@ -38,6 +44,7 @@ def send_prompt(prompt, api_details):
         return response.json()
     else:
         return {"error": f"Failed to get response: {response.status_code} {response.text}"}
+
 
 # Example usage
 if __name__ == "__main__":
