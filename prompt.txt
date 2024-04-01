@@ -1,0 +1,3 @@
+My electric vehicle isn't charging when I plug it into the charging station.
+I've checked that the charging cable is securely connected to both my vehicle and the charging station,
+but the charging process doesn't start. What are some steps I can take to troubleshoot this issue?

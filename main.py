@@ -10,15 +10,14 @@ def main():
     # Load environment variables from a .env file
     load_dotenv()
 
-    # Prompt to send to an LLM
-    prompt = ("My electric vehicle isn't charging when I plug it into the charging station. "
-              "I've checked that the charging cable is securely connected to both my vehicle and the charging station, "
-              "but the charging process doesn't start. What are some steps I can take to troubleshoot this issue?")
+    # Read the prompt from an external file
+    with open("prompt.txt", "r") as file:
+        prompt = file.read().strip()
     
-    # Specifying which LLM service to use ('openai' or 'mistral')
-    llm = 'openai'  # Change this key based on the service you want to use
+    # Specify which LLM service to use ('openai' or 'mistral')
+    llm = 'openai'
 
-    # Call send_prompt from llm_handler with the specified LLM service
+    # Call send_prompt from llm_handler
     response = send_prompt(prompt, llm)
     if response:
         # Print the response from the API
