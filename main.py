@@ -2,15 +2,11 @@ import logging
 from dotenv import load_dotenv
 from llm_handler import send_prompt
 
-# Setup logging config for entire app
-def setup_logging(level=logging.INFO):
-    logging.basicConfig(level=level,
-                        format='%(levelname)s:%(name)s:%(filename)s:%(lineno)d:%(message)s')
+# Setup logging level and format for entire app
+# Level options are DEBUG, INFO, WARN, ERROR, and CRITICAL
+logging.basicConfig(level=logging.INFO, format='%(levelname)s:%(name)s:%(filename)s:%(lineno)d:%(message)s')
 
 def main():
-    # Initialize logging with desired level
-    setup_logging(level=logging.DEBUG)
-
     # Load environment variables from a .env file
     load_dotenv()
 
