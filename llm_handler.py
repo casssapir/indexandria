@@ -11,7 +11,7 @@ def send_prompt(prompt, llm):
     if not api_details:
         raise ValueError(f"API details for {llm} are not configured.")
 
-    api_key = os.getenv(api_details['api_key_env_variable'])
+    api_key = os.getenv(api_details['api_key'])
     if not api_key:
         raise ValueError(f"API key for {llm} is not set in the .env file.")
 
