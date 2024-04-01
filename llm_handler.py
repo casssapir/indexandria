@@ -1,22 +1,20 @@
+import logging
 import requests
 from dotenv import load_dotenv
 import os
 from requests.exceptions import RequestException
-from logging_config import setup_logging  # Import the setup function
+from llm_config import llm_api_details  # Import the API details dictionary
 
-# Initialize logging with desired level
-setup_logging(level=logging.DEBUG)
-                    
+def send_prompt(prompt, llm_service_key):
+    logging.info(f"Sending prompt to {llm_service_key} API: {prompt[:50]}...")
 
-# Load environment variables from a .env file
-load_dotenv()
-
-def send_prompt(prompt, api_detailsx):
-    logging.info(f"Sending prompt to API: {prompt[:50]}...")
+    api_details = llm_api_details.get(llm_service_key)
+    if not api_details:
+        raise ValueError(f"API details for {llm_service_key} are not configured.")
 
     api_key = os.getenv(api_details['api_key_env_variable'])
     if not api_key:
-        raise ValueError(f"API key for {api_details['model']} is not set in the .env file.")
+        raise ValueError(f"API key for {llm_service_key} is not set in the .env file.")
 
     headers = {"Authorization": f"Bearer {api_key}", "Content-Type": "application/json"}
 
@@ -24,26 +22,9 @@ def send_prompt(prompt, api_detailsx):
 
     try:
         response = requests.post(api_details['url'], headers=headers, json=payload)
-        response.raise_for_status()  # This will raise an HTTPError for bad responses
-        logging.info("Received response successfully.")
+        response.raise_for_status()
+        logging.info("Received response successfully from {llm_service_key}.")
         return response.json()
     except RequestException as e:
-        logging.error(f"Failed to get response: {e}")
+        logging.error(f"Failed to get response from {llm_service_key}: {e}")
         return None
-
-# Example usage should ideally be in a separate file or entry point
-if __name__ == "__main__":
-    prompt = "I can't log in to my account. Can you help?"
-    openai_details = {
-        "api_key_env_variable": "OPENAI_API_KEY",
-        "url": "https://api.openai.com/v1/chat/completions",
-        "model_name": "gpt-3.5-turbo",
-    }
-    mistral_details = {
-        "api_key_env_variable": "MISTRAL_API_KEY",
-        "url": "https://api.mistral.ai/v1/chat/completions",
-        "model_name": "open-mixtral-8x7b",
-    }
-    # Try changing 'openai_details' to 'mistral_details' to test with Mistral AI
-    response = send_prompt(prompt, openai_details)
-    print(response)
