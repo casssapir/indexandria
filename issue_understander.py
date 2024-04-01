@@ -1,5 +1,6 @@
 import logging
 from dotenv import load_dotenv
+import json
 from llm_handler import send_prompt
 
 def craft_issue_understanding_prompt(ticket_details, additional_context=""):
@@ -61,6 +62,17 @@ def update_ticket_details(ticket_details, llm_response):
     # For demonstration, let's assume llm_response contains directly applicable updates
     pass
 
+def save_ticket_details_to_json(ticket_details, filename='ticket_details.json'):
+    """
+    Saves the ticket details to a JSON file.
+
+    Parameters:
+    - ticket_details: The dictionary containing the ticket information.
+    - filename: The name of the file to save the ticket details to.
+    """
+    with open(filename, 'w') as file:
+        json.dump(ticket_details, file, indent=4)
+
 def main():
     load_dotenv()
     logging.basicConfig(level=logging.INFO, format='%(levelname)s:%(name)s:%(filename)s:%(lineno)d:%(message)s')
@@ -86,10 +98,12 @@ def main():
         if user_input.lower() == 'exit':
             break
 
-        # Here, you would update ticket_details based on the user's response
-        # This requires parsing user_input for relevant updates to Who, What, Where, When, Why
-        # For demonstration purposes, let's assume all responses go into 'What' for simplicity
+        # Update ticket details based on user's response and save to a JSON file
+        # Assume all responses go into 'What' for simplicity
         ticket_details['What'] += f" {user_input}"
+
+        # Save the updated ticket details to a JSON file
+        save_ticket_details_to_json(ticket_details)
 
         # Add user's response to the context for the next round of clarification
         additional_context += f"\nCustomer's Response:\n{user_input}\n"
