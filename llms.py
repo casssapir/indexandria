@@ -1,4 +1,4 @@
-# Dictionary to hold API details for each LLM service
+# Dictionary of API details for each LLM service
 llms = {
     "openai": {
         "api_key": "OPENAI_API_KEY",
