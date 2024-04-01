@@ -1,5 +1,5 @@
 # Dictionary to hold API details for each LLM service
-llm_api_details = {
+llms = {
     "openai": {
         "api_key_env_variable": "OPENAI_API_KEY",
         "url": "https://api.openai.com/v1/chat/completions",

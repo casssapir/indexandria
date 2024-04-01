@@ -2,18 +2,18 @@ import logging
 import requests
 from requests.exceptions import RequestException
 import os
-from llm_config import llm_api_details
+from llms import llms
 
-def send_prompt(prompt, llm_service_key):
-    logging.info(f"Sending prompt to {llm_service_key} API: {prompt[:50]}...")
+def send_prompt(prompt, llm):
+    logging.info(f"Sending prompt to {llm} API: {prompt[:50]}...")
 
-    api_details = llm_api_details.get(llm_service_key)
+    api_details = llms.get(llm)
     if not api_details:
-        raise ValueError(f"API details for {llm_service_key} are not configured.")
+        raise ValueError(f"API details for {llm} are not configured.")
 
     api_key = os.getenv(api_details['api_key_env_variable'])
     if not api_key:
-        raise ValueError(f"API key for {llm_service_key} is not set in the .env file.")
+        raise ValueError(f"API key for {llm} is not set in the .env file.")
 
     headers = {"Authorization": f"Bearer {api_key}", "Content-Type": "application/json"}
 
@@ -22,8 +22,8 @@ def send_prompt(prompt, llm_service_key):
     try:
         response = requests.post(api_details['url'], headers=headers, json=payload)
         response.raise_for_status()
-        logging.info("Received response successfully from {llm_service_key}.")
+        logging.info("Received response successfully from {llm}.")
         return response.json()
     except RequestException as e:
-        logging.error(f"Failed to get response from {llm_service_key}: {e}")
+        logging.error(f"Failed to get response from {llm}: {e}")
         return None
