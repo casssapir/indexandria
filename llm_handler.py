@@ -1,18 +1,17 @@
 import requests
 from dotenv import load_dotenv
 import os
-import logging
 from requests.exceptions import RequestException
+from logging_config import setup_logging  # Import the setup function
 
-# Initialize logging
-# set log level to DEBUG, INFO, WARNING, ERROR, CRITICAL
-logging.basicConfig(level=logging.DEBUG,
-                    format='%(levelname)s:%(name)s:%(filename)s:%(lineno)d:%(message)s')
+# Initialize logging with desired level
+setup_logging(level=logging.DEBUG)
+                    
 
 # Load environment variables from a .env file
 load_dotenv()
 
-def send_prompt(prompt, api_details, request_context=False):
+def send_prompt(prompt, api_detailsx):
     logging.info(f"Sending prompt to API: {prompt[:50]}...")
 
     api_key = os.getenv(api_details['api_key_env_variable'])
