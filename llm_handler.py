@@ -1,9 +1,8 @@
 import logging
 import requests
-from dotenv import load_dotenv
-import os
 from requests.exceptions import RequestException
-from llm_config import llm_api_details  # Import the API details dictionary
+import os
+from llm_config import llm_api_details
 
 def send_prompt(prompt, llm_service_key):
     logging.info(f"Sending prompt to {llm_service_key} API: {prompt[:50]}...")
