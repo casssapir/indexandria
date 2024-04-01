@@ -2,7 +2,7 @@ import logging
 from dotenv import load_dotenv
 from llm_handler import send_prompt
 
-def craft_problem_understanding_prompt(user_issue, additional_context=""):
+def craft_issue_understanding_prompt(user_issue, additional_context=""):
     """
     Enhances the initial prompt with user responses to clarifying questions.
     """
@@ -42,7 +42,7 @@ def main():
     llm = 'openai'  # Specify the LLM service to use
 
     while True:
-        prompt = craft_problem_understanding_prompt(user_issue, additional_context)
+        prompt = craft_issue_understanding_prompt(user_issue, additional_context)
         response = send_prompt(prompt, llm)
         clarifying_questions = extract_clarifying_questions(response)
 
