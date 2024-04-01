@@ -4,6 +4,7 @@ from requests.exceptions import RequestException
 import os
 from llms import llms
 
+# Send prompt to an llm. Receive a JSON response.
 def send_prompt(prompt, llm):
     logging.info(f"Sending prompt to {llm} API: {prompt[:50]}...")
 
