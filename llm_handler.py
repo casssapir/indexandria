@@ -9,7 +9,7 @@ def send_prompt(prompt, llm):
 
     api_details = llms.get(llm)
     if not api_details:
-        raise ValueError(f"API details for {llm} are not configured.")
+        raise ValueError(f"API details for {llm} are not in llms.py")
 
     api_key = os.getenv(api_details['api_key'])
     if not api_key:
@@ -17,7 +17,7 @@ def send_prompt(prompt, llm):
 
     headers = {"Authorization": f"Bearer {api_key}", "Content-Type": "application/json"}
 
-    payload = {"model": api_details['model_name'], "messages": [{"role": "user", "content": prompt}]}
+    payload = {"model": api_details['model'], "messages": [{"role": "user", "content": prompt}]}
 
     try:
         response = requests.post(api_details['url'], headers=headers, json=payload)
